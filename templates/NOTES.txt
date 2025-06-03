@@ -1,0 +1,26 @@
+1. Get the application URL:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "rauthy.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ include "rauthy.servicePort" . }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "rauthy.fullname" . }} 8080:{{ include "rauthy.servicePort" . }}
+  echo "Visit http://127.0.0.1:8080 to access Rauthy"
+{{- end }}
+
+2. Configuration:
+{{- if .Values.existingSecret }}
+   ✓ Using secret: {{ .Values.existingSecret }}
+{{- else }}
+   ⚠️  Consider creating a secret for sensitive info!!
+{{- end }}
+{{- if .Values.serviceMonitor.enabled }}
+   ✓ Metrics enabled at /metrics on port {{ .Values.ports.metrics | default 9090 }}
+{{- end }}
+
+3. Health check: /auth/v1/health

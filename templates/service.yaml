@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rauthy.fullname" . }}
+  labels:
+    {{- include "rauthy.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  publishNotReadyAddresses: true
+  ports:
+    {{- include "rauthy.servicePorts" . | nindent 4 }}
+  selector:
+    {{- include "rauthy.selectorLabels" . | nindent 4 }}
