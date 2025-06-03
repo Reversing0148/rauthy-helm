@@ -1,3 +1,27 @@
 apiVersion: v1
-entries: {}
-generated: "2025-06-05T23:45:50Z"
+entries:
+  rauthy:
+  - apiVersion: v2
+    appVersion: 0.29.4
+    created: "2025-06-03T23:51:59.389296737Z"
+    description: A Helm chart for rauthy, an open source sso server implementation
+      in rust.
+    digest: bf09a08f84d890226f9eaa9ff9dba7394bca93e61f375c9f6ab3d68951902879
+    icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
+    keywords:
+    - authentication
+    - authorization
+    - sso
+    - oidc
+    - oauth2
+    - webauthn
+    - security
+    - rust
+    name: rauthy
+    sources:
+    - https://github.com/sebadob/rauthy
+    type: application
+    urls:
+    - https://github.com/Reversing0148/rauthy-helm/releases/download/rauthy-1.0.0/rauthy-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-06-03T23:51:59.389307387Z"
