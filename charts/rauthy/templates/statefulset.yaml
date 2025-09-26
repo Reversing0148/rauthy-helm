@@ -7,7 +7,10 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   serviceName: {{ include "rauthy.fullname" . }}-headless
-  podManagementPolicy: {{ .Values.podManagementPolicy | default "OrderedReady" }}
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    {{- toYaml .Values.updateStrategy | nindent 4 }}
+  revisionHistoryLimit: 5
   selector:
     matchLabels:
       {{- include "rauthy.selectorLabels" . | nindent 6 }}
@@ -57,6 +60,11 @@ spec:
             - name: api
               containerPort: {{ .Values.ports.api }}
               protocol: TCP
+            {{- if and .Values.ports.metrics .Values.serviceMonitor.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.ports.metrics }}
+              protocol: TCP
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
