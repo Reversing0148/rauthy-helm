@@ -170,6 +170,8 @@ tolerations: []
 
 affinity: {}
 
+topologySpreadConstraints: []
+
 # This allows for mounting config.toml.
 # If left unset, a new Secret will be generated using this values.yaml.
 # The generated config.toml is enough to get you experimenting.
