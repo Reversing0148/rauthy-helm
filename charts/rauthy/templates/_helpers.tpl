@@ -114,7 +114,7 @@ Generate the rp_origin based on the external scheme and domain name with appropr
 {{- if eq (include "rauthy.isTLSEnabled" .) "true" -}}
 {{- printf "%s://%s:443" (include "rauthy.externalScheme" .) (include "rauthy.domainName" .) -}}
 {{- else -}}
-{{- printf "%s://%s:%d" (include "rauthy.externalScheme" .) (include "rauthy.domainName" .) (.Values.ports.http) -}}
+{{- printf "%s://%s:%d" (include "rauthy.externalScheme" .) (include "rauthy.domainName" .) (int .Values.ports.http) -}}
 {{- end -}}
 {{- end }}
 
