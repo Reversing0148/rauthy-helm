@@ -177,6 +177,13 @@ affinity: {}
 # you can retain your configuration and keys across redeployments.
 externalSecret: ""
 
+# Extra environment variables to pass to the container.
+# This is mostly for backwards compatibility. New installations should
+# prefer using the config.toml via the externalSecret option.
+env: []
+# - name: FOO
+#   value: "BAR"
+
 # Persistence configuration for the volumeClaimTemplate.
 # Emptydir will be used if disabled
 persistence:
