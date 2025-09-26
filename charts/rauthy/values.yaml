@@ -78,7 +78,7 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-  #   - secretName: rauthytst-tls
+  #   - secretName: rauthy-ingress-tls
   #     hosts:
   #       - chart-example.local
 
