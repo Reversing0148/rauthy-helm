@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - release-*
+      - main
 
 permissions:
   contents: write # allow actions to update gh-pages branch
