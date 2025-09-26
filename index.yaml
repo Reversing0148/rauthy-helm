@@ -3,6 +3,16 @@ entries:
   rauthy:
   - apiVersion: v2
     appVersion: 0.32.3
+    created: "2025-09-26T00:58:34.523121456Z"
+    description: A Helm chart for Kubernetes
+    digest: 7b613f4cb3becc3f69bd8cbc5e564bfd34732cfa3b585209a4c4b524d293f94e
+    name: rauthy
+    type: application
+    urls:
+    - https://github.com/Reversing0148/rauthy-helm/releases/download/rauthy-helm-chart-0.32.3-rc4/rauthy-0.32.3-rc4.tgz
+    version: 0.32.3-rc4
+  - apiVersion: v2
+    appVersion: 0.32.3
     created: "2025-09-26T00:50:45.940098424Z"
     description: A Helm chart for Kubernetes
     digest: cb4f5a94e0a3f7d17dbd628514ede9ae04b888081b4ae5fc50a213020c66ca46
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/Reversing0148/rauthy-helm/releases/download/rauthy-helm-chart-0.32.3-rc2/rauthy-0.32.3-rc2.tgz
     version: 0.32.3-rc2
-generated: "2025-09-26T00:50:45.940110547Z"
+generated: "2025-09-26T00:58:34.523137756Z"
