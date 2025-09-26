@@ -197,6 +197,8 @@ persistence:
 serviceMonitor:
   # Enable or disable the ServiceMonitor resource.
   enabled: false
+  # Namespace override for the ServiceMonitor resource.
+  namespaceOverride: ""
   # The port exposed by the service to scrape metrics from.
   port: metrics
   # The interval at which Prometheus will scrape metrics.
