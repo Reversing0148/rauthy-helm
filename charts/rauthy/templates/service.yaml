@@ -15,5 +15,11 @@ spec:
       targetPort: {{ .Values.service.scheme }}
       protocol: TCP
       name: {{ .Values.service.scheme }}
+    {{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: {{ metrics }}
+    {{- end }}
   selector:
     {{- include "rauthy.selectorLabels" . | nindent 4 }}
