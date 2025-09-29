@@ -73,7 +73,7 @@ helm uninstall rauthy
 | `service.scheme` | Rauthy http and api scheme | `http` |
 
 ### Headless Service Parameters
-This enables pod to pod communication for clustered deployments
+This enables pod to pod communication for clustered deployments.
 
 | Name | Description | Value |
 |------|-------------|-------|
@@ -81,7 +81,7 @@ This enables pod to pod communication for clustered deployments
 | `headlessService.ports.api` | Api port used by Rauthy | `8200` |
 
 ### Metrics configuration
-This enables pod to pod communication for clustered deployments
+This defines a port for metrics on the service and pod resources. 
 
 | Name | Description | Value |
 |------|-------------|-------|
@@ -193,14 +193,14 @@ By default, the chart uses an `emptyDir` volume when persistence is disabled.
 
 ## Features
 
-- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy
-- Highly available clustered setup support
-- Configurable via external secret
-- Pod disruption budget, topology spread constraints support for high availability
+- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
+- Configurable via external secret,
+- Highly available clustered setup supportm
+- External access via Ingress / httpRoute,
+- Metrics and serviceMonitor support.
 
 ## Known Issues
 
-- Initial setup of a clustered deployment might take a while
 - When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template. 
 
 ## License
