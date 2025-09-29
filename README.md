@@ -43,7 +43,6 @@ helm uninstall rauthy
 | Name | Description | Value |
 |------|-------------|-------|
 | `replicaCount` | Number of Rauthy replicas | `1` |
-| `podManagementPolicy` | Pod management policy for StatefulSet | `Parallel` |
 
 ### Image Parameters
 
@@ -51,8 +50,8 @@ helm uninstall rauthy
 |------|-------------|-------|
 | `image.repository` | Rauthy image repository | `ghcr.io/sebadob/rauthy` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
-| `image.tag` | Image tag (overrides the chart appVersion) | `"0.32.3"` |
-| `imagePullSecrets` | Docker registry secret names as an array | `[]` |
+| `image.tag` | Image tag (overrides the chart appVersion) | `` |
+| `imagePullSecrets` | Docker registry secret names | `[]` |
 
 ### Security Parameters
 
@@ -68,10 +67,26 @@ helm uninstall rauthy
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `ports.http` | HTTP port | `8080` |
-| `ports.raft` | Raft consensus port | `8100` |
-| `ports.api` | API port | `8200` |
-| `ports.metrics` | Metrics port | `9100` |
+| `service.annotations` | Annotations for the service| `{}` |
+| `service.type` | Service type | `ClusterIP` |
+| `service.port` | Rauthy port exposed by the service | `8080` |
+| `service.scheme` | Rauthy http and api scheme | `http` |
+
+### Headless Service Parameters
+This enables pod to pod communication for clustered deployments
+
+| Name | Description | Value |
+|------|-------------|-------|
+| `headlessService.ports.raft` | Raft port used by Rauthy | `8100` |
+| `headlessService.ports.api` | Api port used by Rauthy | `8200` |
+
+### Metrics configuration
+This enables pod to pod communication for clustered deployments
+
+| Name | Description | Value |
+|------|-------------|-------|
+| `metrics.enabled` | Enable metrics port on the service | `false` |
+| `metrics.port` | Metrics port to be published via the service | `9090` |
 
 ### Ingress Parameters
 
@@ -128,7 +143,6 @@ ingress:
 persistence:
   enabled: true
   size: 256Mi
-  storageClassName: longhorn
 ```
 
 ### High Availability Deployment
@@ -156,7 +170,6 @@ ingress:
 persistence:
   enabled: true
   size: 256Mi
-  storageClassName: longhorn
 
 affinity:
   podAntiAffinity:
@@ -174,22 +187,21 @@ affinity:
 
 ## Persistence
 
-The chart mounts a persistent volume at `/app/data` for storing Rauthy's database and configuration.
+The chart mounts a persistent volume at `/app/data` for storing Rauthy's internal hiqlite database and configuration.
 
 By default, the chart uses an `emptyDir` volume when persistence is disabled.
 
 ## Features
 
-- Automated starter secret generation for getting familiar with rauthy
+- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy
 - Highly available clustered setup support
-- Configurable via external secrets
-- Pod disruption budget for high availability
+- Configurable via external secret
+- Pod disruption budget, topology spread constraints support for high availability
 
 ## Known Issues
 
-- Cluster setup may take some time during initial deployment
-- HTTPRoute configuration is experimental and not fully tested
-- Chart notes are minimal (improvement planned)
+- Initial setup of a clustered deployment might take a while
+- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template. 
 
 ## License
 
