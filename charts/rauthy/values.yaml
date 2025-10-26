@@ -7,8 +7,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-# Setting a relica count of higher than 1 will enable clustered mode for rauthy.
-# Odd numbers are recommended for raft consensus. 
+# Setting a replica count of higher than 1 will enable clustered mode for rauthy.
+# Odd numbers are enforced to ensure raft consensus can be achieved.
 replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
@@ -27,16 +27,6 @@ updateStrategy:
   type: RollingUpdate
   rollingUpdate:
     partition: 0
-
-# This helps ensure minimum availability during voluntary disruptions more information can be found here: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-podDisruptionBudget:
-  enabled: false
-  # Additional annotations for the PodDisruptionBudget
-  annotations: {}
-  # Either minAvailable or maxUnavailable should be specified, not both.
-  # For clustered applications, setting minAvailable to (replicaCount - 1) is a good practice.
-  minAvailable: 2
-  # maxUnavailable: 1
 
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -75,12 +65,14 @@ service:
   scheme: "http"
 
 # This is for setting up a headless service to enable pod-to-pod communication for clustered workloads
+# The headless service is only created when replicaCount is greater than 1
 headlessService:
   ports:
     raft: 8100
     api: 8200
 
-# This is for setting up Rauthy metrics
+# This will enable the metrics in the generated config.toml
+# if config.generate is true and will expose the metrics port in the service.
 metrics:
   enabled: false
   port: 9090
@@ -140,17 +132,34 @@ httpRoute:
   #     - name: version
   #       value: v2
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# This is for configuring resource requests and limits for the rauthy container.
+# To ensure Rauthy is scheduled properly please configure the memory requests accordingly.
+# Make sure there is at least (MAX_HASH_THREADS * ARGON2_M_COST / 1024) + idle memory available.
+# The default Rauthy configuration requires at least 256Mi of memory for hashing on top
+# of the idle memory of the container (around 100Mi using hiqlite).
+# Read more at https://sebadob.github.io/rauthy/config/tuning.html#password-hashing
+resources:
+  requests:
+    cpu: 100m
+    memory: 360Mi
+  # Setting limits for Rauthy is overall not recommended nor required. However you might find it best
+  # to set limits in certain environments. Setting a cpu limit can help to avoid noisy neighbor situations
+  # on the node should Rauthy experience high load. Since Rust is not a garbage collected language you don't
+  # really need to set memory limits. Instead make sure to keep the memory requests updated.
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 200m
+  #   memory: 400Mi
+
+# Rauthy uses jemalloc as memory allocator which you can tune via an environment variable.
+# By default uses the medium instance with up to 500-1000 users.
+# To get the best performance it is recommended to use the preset based on your usercount.
+# small: up to 500 users, medium: up to 1000 users, big: 1000+ users, open: up to millions of users
+# Read more at: https://sebadob.github.io/rauthy/config/tuning.html#memory-allocator
+malloc:
+  # Preset options are: small, medium, big, open and custom
+  preset: medium
+  # Custom options when preset is set to "custom"
+  custom: ""
 
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
@@ -183,17 +192,31 @@ nodeSelector: {}
 
 tolerations: []
 
+# By default podAntiAffinity using topologyKey: kubernetes.io/hostname is preferred with weight 100
 affinity: {}
 
 topologySpreadConstraints: []
 
-# This allows for mounting config.toml. If left unset, a new Secret will
-# be generated using this values.yaml. The generated config.toml is enough
-# to get you experimenting. It is in your own interest, to set a secret
-# that is not managed by helm so that you can retain your configuration
-# and keys across redeployments. The generated secret will not be removed
-# with the helm release to prevent data loss.
+# This allows for mounting config.toml. It is in your own interest, to set
+# a secret that is not managed by helm so that you can retain your configuration
+# and keys across redeployments.
+# Either externalSecret or config can be used but not both.
 externalSecret: ""
+
+# This allows for automatic generation of config.toml based on values
+# in this values.yaml file. The generated config is enough to get you
+# started with rauthy.
+# Either externalSecret or config can be used but not both.
+config:
+  generate: true
+  # Set proxy_mode and respective trusted_proxies for the generated config.toml
+  # To get the cidr range of your kubernetes cluster use the following:
+  # kubectl cluster-info dump | grep -m 1 "cluster-cidr"
+  # Multiple trusted proxies can be set using an array.
+  trustedProxies: []
+  #  - "10.62.0.0/24"
+  #  - "172.16.0.0/12"
+
 
 # Extra environment variables to pass to the container.
 # This is mostly for backwards compatibility. New installations should
