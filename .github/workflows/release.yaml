@@ -32,42 +32,8 @@ jobs:
         run: |
           cp README.md charts/rauthy/README.md
 
-      - name: Generate Release Notes
-        id: release-notes
-        run: |
-          # Get the chart version
-          CHART_VERSION=$(awk '/^version:/ {print $2}' charts/rauthy/Chart.yaml)
-          APP_VERSION=$(awk '/^appVersion:/ {print $2}' charts/rauthy/Chart.yaml | tr -d '"')
-          
-          # Generate release notes
-          echo "Generating release notes for version ${CHART_VERSION}..."
-          
-          # Create release notes content
-          {
-            echo "# Rauthy Helm Chart Release ${CHART_VERSION}"
-            echo
-            echo "## Chart Information"
-            echo "- Chart Version: ${CHART_VERSION}"
-            echo "- App Version: ${APP_VERSION}"
-            echo
-            echo "## Changes in this Release"
-            echo
-            # Get commits since last tag
-            git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s" -- charts/rauthy/
-            echo
-            echo
-            echo "## Configuration"
-            echo "For detailed configuration options, please refer to the [values.yaml](./charts/rauthy/values.yaml) file."
-          } > release-notes.md
-          
-          # Store release notes for chart-releaser
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          cat release-notes.md >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_RELEASE_NAME_TEMPLATE: "rauthy-helm-chart-{{ .Version }}"
-          CR_RELEASE_NOTES_FILE: release-notes.md
