@@ -208,9 +208,9 @@ By default, the chart uses an `emptyDir` volume when persistence is disabled.
 - External access via Ingress / httpRoute,
 - Metrics and serviceMonitor support.
 
-## Known Issues
+## HTTPRoute considerations
 
-- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template. 
+- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template.
 
 ## License
 
