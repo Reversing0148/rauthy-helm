@@ -8,6 +8,14 @@
 - Helm 3.2.0+
 - Persistent volume provisioner support in the underlying infrastructure (if persistence is enabled)
 
+## Features
+
+- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
+- Bring Your Own configuration via external secret,
+- Highly available, clustered setup support,
+- External access via Ingress / httpRoute,
+- Metrics and serviceMonitor support.
+
 ## Installation
 
 ### Add Helm Repository
@@ -107,17 +115,20 @@ This defines a port for metrics on the service and pod resources.
 | `persistence.accessMode` | Persistent Volume access mode | `ReadWriteOnce` |
 | `persistence.storageClassName` | Persistent Volume storage class | `` |
 
-### Pod Disruption Budget Parameters
+
+### Memory Allocator Parameters
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `podDisruptionBudget.enabled` | Enable PodDisruptionBudget | `false` |
-| `podDisruptionBudget.minAvailable` | Minimum available pods | `2` |
+| `malloc.preset` | Jemalloc preset (small/medium/big/open/custom) | `medium` |
+| `malloc.custom` | Custom malloc configuration when preset is "custom" | `""` |
 
 ### Configuration Parameters
 
 | Name | Description | Value |
 |------|-------------|-------|
+| `config.generate` | Enable automatic config.toml generation | `true` |
+| `config.trustedProxies` | List of trusted proxy CIDR ranges | `[]` |
 | `externalSecret` | Name of existing secret containing Rauthy configuration | `""` |
 
 ## Examples
@@ -126,6 +137,15 @@ This defines a port for metrics on the service and pod resources.
 
 ```yaml
 replicaCount: 1
+
+config:
+  generate: true
+  proxyMode: true
+  trustedProxies:
+    - "10.199.20.0/24"
+
+malloc:
+  preset: small
 
 ingress:
   enabled: true
@@ -150,9 +170,19 @@ persistence:
 ```yaml
 replicaCount: 3
 
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 2
+config:
+  generate: true
+  proxyMode: true
+  trustedProxies:
+    - "10.199.20.0/24"
+
+malloc:
+  preset: big
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 200m
 
 ingress:
   enabled: true
@@ -170,19 +200,6 @@ ingress:
 persistence:
   enabled: true
   size: 256Mi
-
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app.kubernetes.io/name
-            operator: In
-            values:
-            - rauthy
-        topologyKey: kubernetes.io/hostname
 ```
 
 ## Persistence
@@ -191,17 +208,10 @@ The chart mounts a persistent volume at `/app/data` for storing Rauthy's interna
 
 By default, the chart uses an `emptyDir` volume when persistence is disabled.
 
-## Features
 
-- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
-- Configurable via external secret,
-- Highly available clustered setup supportm
-- External access via Ingress / httpRoute,
-- Metrics and serviceMonitor support.
+## HTTPRoute considerations
 
-## Known Issues
-
-- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template. 
+- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template.
 
 ## License
 

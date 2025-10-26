@@ -1,3 +1,6 @@
+{{- include "rauthy.validateReplicaCount" . }}
+{{- include "rauthy.validateConfigurationMethod" . }}
+{{- include "rauthy.validateSize" . }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -43,10 +46,6 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.env }}
-          env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           ports:
             - name: {{ .Values.service.scheme }}
               containerPort: {{ .Values.service.port }}
@@ -72,6 +71,12 @@ spec:
           {{- end }}
           {{- with .Values.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: "MALLOC_CONF"
+              value: {{ include "rauthy.mallocConf" . | quote }}
+          {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
@@ -100,8 +105,19 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
       affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ include "rauthy.name" . }}
+              topologyKey: kubernetes.io/hostname
+      {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}

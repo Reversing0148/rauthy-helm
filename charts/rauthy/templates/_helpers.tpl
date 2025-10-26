@@ -101,3 +101,14 @@ Generate rp_origin configuration based on the pubUrl and external port
 {{- printf "%s:%s" (include "rauthy.pubUrl" .) (include "rauthy.externalPort" .) -}}
 {{- end }}
 
+{{/*
+Generate jemalloc configuration based on the malloc settings
+*/}}
+{{- define "rauthy.mallocConf" -}}
+{{- $presets := dict "medium" "abort_conf:true,narenas:8,tcache_max:4096,dirty_decay_ms:5000,muzzy_decay_ms:5000" "small" "abort_conf:true,narenas:1,tcache_max:1024,dirty_decay_ms:1000,muzzy_decay_ms:1000" "big" "abort_conf:true,narenas:16,tcache_max:16384,dirty_decay_ms:10000,muzzy_decay_ms:10000" "open" "abort_conf:true,narenas:64,tcache_max:32768,dirty_decay_ms:30000,muzzy_decay_ms:30000" -}}
+{{- if eq .Values.size "custom" -}}
+{{- .Values.resources.custom | default "" -}}
+{{- else -}}
+{{- get $presets (default "small" .Values.size) | default (get $presets "small") -}}
+{{- end -}}
+{{- end -}}

@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write # allow actions to update gh-pages branch
+  contents: write
 
 jobs:
   release:
@@ -23,12 +23,16 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4.2.0
+        uses: azure/setup-helm@v4.3.1
         with:
           version: v3.15.1
+          
+      - name: Copy README.md to chart directory
+        run: |
+          cp README.md charts/rauthy/README.md
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_RELEASE_NAME_TEMPLATE: "rauthy-helm-chart-{{ .Version }}"

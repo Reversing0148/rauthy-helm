@@ -1,21 +1,12 @@
-{{- if .Values.podDisruptionBudget.enabled }}
+{{- if gt (int .Values.replicaCount) 1 }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "rauthy.fullname" . }}
   labels:
     {{- include "rauthy.labels" . | nindent 4 }}
-  {{- with .Values.podDisruptionBudget.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
-  {{- if .Values.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
-  {{- end }}
-  {{- if .Values.podDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
-  {{- end }}
+  maxUnavailable: 1
   selector:
     matchLabels:
       {{- include "rauthy.selectorLabels" . | nindent 6 }}
