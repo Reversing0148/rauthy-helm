@@ -8,6 +8,14 @@
 - Helm 3.2.0+
 - Persistent volume provisioner support in the underlying infrastructure (if persistence is enabled)
 
+## Features
+
+- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
+- Bring Your Own configuration via external secret,
+- Highly available, clustered setup support,
+- External access via Ingress / httpRoute,
+- Metrics and serviceMonitor support.
+
 ## Installation
 
 ### Add Helm Repository
@@ -200,13 +208,6 @@ The chart mounts a persistent volume at `/app/data` for storing Rauthy's interna
 
 By default, the chart uses an `emptyDir` volume when persistence is disabled.
 
-## Features
-
-- Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
-- Configurable via external secret,
-- Highly available clustered setup supportm
-- External access via Ingress / httpRoute,
-- Metrics and serviceMonitor support.
 
 ## HTTPRoute considerations
 
