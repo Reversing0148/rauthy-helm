@@ -37,7 +37,7 @@ jobs:
 
       - name: Lint
         run: |
-          helm lint .
+          helm lint charts/rauthy
 
       - name: Copy README.md to chart directory
         run: |
