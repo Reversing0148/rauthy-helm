@@ -202,35 +202,31 @@ persistence:
   size: 256Mi
 ```
 
+## Generating rauthy configuration
+The chart allows you to deploy rauthy by generating a configuration for you based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html).
+
+To use this feature keep the externalSecret empty.
+
 ## Bring your own secret
 
 The chart supports configuring rauthy via your own secret.
 
-You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the externalSecret field.
-
-Encode your config.toml into base64
-```bash
-cat config.toml | base64 -w 0
-```
-
-Create the secret with your favourite text editor, save it as rauthy-config.yaml
+You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the `externalSecret` field. For example:
 ```yaml
 apiVersion: v1
 kind: Secret
-type: Opaque
 metadata:
   name: rauthy-config
   namespace: rauthy
-data:
-  config.toml: <base64 encoded config.toml>
+type: Opaque
+stringData:
+  config.toml: |-
+    # paste and adjust config from
+    # https://sebadob.github.io/rauthy/config/config_minimal.html
+    # or
+    # https://sebadob.github.io/rauthy/config/config.html
 ```
-
-Apply the secret
-```bash
-kubectl apply -f rauthy-config.yaml
-```
-
-Set the externalSecret field in values.yaml using the Secret's metadata.name field:
+Make sure to keep `values.yaml` updated:
 ```yaml
 externalSecret: "rauthy-config"
 ```
@@ -244,7 +240,7 @@ By default, the chart uses an `emptyDir` volume when persistence is disabled.
 
 ## HTTPRoute considerations
 
-- When existingSecret is not set, and HTTPRoute is enabled the templates assume you have tls configured on the gateway when generating the secret template.
+- When `existingSecret` is not set, and `HTTPRoute` is enabled the templates assume you have tls configured on the gateway when generating the secret template.
 
 ## License
 
