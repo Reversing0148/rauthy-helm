@@ -232,7 +232,7 @@ kubectl apply -f rauthy-config.yaml
 
 Set the externalSecret field in values.yaml using the Secret's metadata.name field:
 ```yaml
-externalSecret: rauthy-config
+externalSecret: "rauthy-config"
 ```
 
 ## Persistence
