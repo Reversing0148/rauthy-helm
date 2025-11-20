@@ -202,6 +202,39 @@ persistence:
   size: 256Mi
 ```
 
+## Bring your own secret
+
+The chart supports configuring rauthy via your own secret.
+
+You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the externalSecret field.
+
+Encode your config.toml into base64
+```bash
+cat config.toml | base64 -w 0
+```
+
+Create the secret with your favourite text editor, save it as rauthy-config.yaml
+```yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: rauthy-config
+  namespace: rauthy
+data:
+  config.toml: <base64 encoded config.toml>
+```
+
+Apply the secret
+```bash
+kubectl apply -f rauthy-config.yaml
+```
+
+Set the externalSecret field in values.yaml using the Secret's metadata.name field:
+```yaml
+externalSecret: rauthy-config
+```
+
 ## Persistence
 
 The chart mounts a persistent volume at `/app/data` for storing Rauthy's internal hiqlite database and configuration.
