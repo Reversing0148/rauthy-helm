@@ -1,4 +1,14 @@
 {{/*
+Validation for Rauthy server scheme
+*/}}
+{{- define "rauthy.validateScheme" -}}
+{{- $validSchemes := list "http" "https" -}}
+{{- if not (has .Values.service.scheme $validSchemes) -}}
+{{- fail (printf "Invalid service scheme '%s'. Must be one of: %s" (default "undefined" .Values.service.scheme) (join ", " $validSchemes)) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Validation for external secret and config generation
 */}}
 {{- define "rauthy.validateConfigurationMethod" -}}

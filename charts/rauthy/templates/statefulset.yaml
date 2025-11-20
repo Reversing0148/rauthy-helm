@@ -1,6 +1,7 @@
 {{- include "rauthy.validateReplicaCount" . }}
 {{- include "rauthy.validateConfigurationMethod" . }}
 {{- include "rauthy.validateSize" . }}
+{{- include "rauthy.validateScheme" . -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
