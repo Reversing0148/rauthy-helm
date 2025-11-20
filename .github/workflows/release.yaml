@@ -26,7 +26,19 @@ jobs:
         uses: azure/setup-helm@v4.3.1
         with:
           version: v3.15.1
-          
+
+      - name: Install Helm plugins
+        run: |
+          helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git
+
+      - name: Create values.schema.json
+        run: |
+          helm schema-gen charts/rauthy/values.yaml > charts/rauthy/values.schema.json
+
+      - name: Lint
+        run: |
+          helm lint .
+
       - name: Copy README.md to chart directory
         run: |
           cp README.md charts/rauthy/README.md
