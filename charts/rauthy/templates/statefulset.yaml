@@ -6,6 +6,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "rauthy.fullname" . }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
   labels:
     {{- include "rauthy.labels" . | nindent 4 }}
 spec:
@@ -82,10 +84,12 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-            - name: "MALLOC_CONF"
-              value: {{ include "rauthy.mallocConf" . | quote }}
-          {{- with .Values.env }}
-            {{- toYaml . | nindent 12 }}
+              - name: "MALLOC_CONF"
+                value: {{ include "rauthy.mallocConf" . | quote }}
+          {{- if .Values.env }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-env
           {{- end }}
           volumeMounts:
             - name: {{ include "rauthy.fullname" . }}-data
