@@ -148,14 +148,22 @@ livenessProbe:
   httpGet:
     path: /auth/v1/health
     port: http
-  initialDelaySeconds: 1
+  initialDelaySeconds: 60
   periodSeconds: 30
+  # We may get a single failure during leader switches
+  failureThreshold: 2
 readinessProbe:
   httpGet:
-    path: /ping
+    path: /ready
     port: api
   initialDelaySeconds: 5
-  periodSeconds: 1
+  # Do NOT increase this period, because otherwise K8s may not catch
+  # a shutting down pod fast enough and may keep routing requests to
+  # it while is will be unable to handle them properly because of
+  # the shutdown.
+  periodSeconds: 3
+  # We may get a single failure during leader switches
+  failureThreshold: 2
 
 # Additional volumes on the output StatefulSet definition.
 volumes: []
