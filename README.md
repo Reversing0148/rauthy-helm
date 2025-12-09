@@ -176,7 +176,7 @@ Either [externalSecret](#external-secret) or config can be used but not both.
 ### Environent variable configuration
 | Name | Description | Value |
 |------|-------------|-------|
-| `env` | List of key value pairs. These will be applied as environment variables. | `[]` |
+| `env` | List of key value pairs. These will be applied as environment variables. | `{}` |
 
 
 ### Persistence Parameters
