@@ -50,7 +50,9 @@ helm uninstall rauthy
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `replicaCount` | Number of Rauthy replicas | `1` |
+| `nameOverride` | Override the chart name | `` |
+| `fullnameOverride` | Override the chart name | `` |
+| `replicaCount` | Number of Rauthy replicas | `3` |
 
 ### Image Parameters
 
@@ -61,15 +63,19 @@ helm uninstall rauthy
 | `image.tag` | Image tag (overrides the chart appVersion) | `` |
 | `imagePullSecrets` | Docker registry secret names | `[]` |
 
-### Security Parameters
+### Statefulset Update Strategy
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `podSecurityContext.runAsNonRoot` | Run containers as non-root user | `true` |
-| `podSecurityContext.fsGroup` | Group ID for the container | `10001` |
-| `securityContext.runAsUser` | User ID for the container | `10001` |
-| `securityContext.runAsGroup` | Group ID for the container | `10001` |
-| `securityContext.allowPrivilegeEscalation` | Allow privilege escalation | `false` |
+| `updateStrategy.type` | Update strategy of the statefulset | `RollingUpdate` |
+| `updateStrategy.rollingUpdate.partition` | Define partitions of the rolling update | `0` |
+
+### Pod Labels and Annotations
+| Name | Description | Value |
+|------|-------------|-------|
+| `podAnnotations` | Additional annotations for the pod definition | `{}` |
+| `podLabels` | Additional labels for the pod definition | `{}` |
+
 
 ### Service Parameters
 
@@ -106,15 +112,14 @@ This defines a port for metrics on the service and pod resources.
 | `ingress.hosts` | Array of ingress hosts | See values.yaml |
 | `ingress.tls` | TLS configuration for ingress | `[]` |
 
-### Persistence Parameters
+### Resource Parameters
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `persistence.enabled` | Enable persistent volume claims | `false` |
-| `persistence.size` | Persistent Volume size | `256Mi` |
-| `persistence.accessMode` | Persistent Volume access mode | `ReadWriteOnce` |
-| `persistence.storageClassName` | Persistent Volume storage class | `` |
+| `resources.requests.cpu` | CPU request of the container | `medium` |
+| `resources.requests.memory` | Memory request of the container | `""` |
 
+Setting limits is possible but not recommended. For more details read the comments in  `values.yaml`.
 
 ### Memory Allocator Parameters
 
@@ -123,84 +128,65 @@ This defines a port for metrics on the service and pod resources.
 | `malloc.preset` | Jemalloc preset (small/medium/big/open/custom) | `medium` |
 | `malloc.custom` | Custom malloc configuration when preset is "custom" | `""` |
 
+### Probe configuration
+| Name | Description | Value |
+|------|-------------|-------|
+| `livenessProbe.httpGet.path` | Path for the liveness probe request | `/auth/v1/health` |
+| `livenessProbe.httpGet.port` | Port for the liveness probe request | `http` |
+| `livenessProbe.initialDelaySeconds` | Seconds to wait before the first liveness probe request is sent | `1` |
+| `livenessProbe.periodSeconds` | How often should kubelet check liveness | `30` |
+| `readinessProbe.httpGet.path` | Path for the readiness probe request | `/ping` |
+| `readinessProbe.httpGet.port` | Port for the readiness probe request | `api` |
+| `readinessProbe.initialDelaySeconds` | Seconds to wait before the first readiness probe request is sent | `5` |
+| `readinessProbe.periodSeconds` | How often should kubelet check readiness | `1` |
+
+
+### Volume configuration
+| Name | Description | Value |
+|------|-------------|-------|
+| `volumes` | Additional volumes on the output StatefulSet definition | `{}` |
+| `volumeMounts` | Additional volumeMounts on the output StatefulSet definition | `[]` |
+
+### Scheduler fine tuning
+| Name | Description | Value |
+|------|-------------|-------|
+| `nodeSelector` | Node selector for the statefulset definition | `{}` |
+| `tolerations` | Tolerations for the statefulset definition | `[]` |
+| `affinity` | Affinity rules for the statefulset definition | `{}` |
+| `topologySpreadConstraints` | Topology spread constraints for the statefulset definition | `[]` |
+
+### External secret
+| Name | Description | Value |
+|------|-------------|-------|
+| `externalSecret` | Name of the secret with your existing configuration. | `` |
+
+Either externalSecret or [config](#configuration-parameters) can be used but not both.
+
 ### Configuration Parameters
 
 | Name | Description | Value |
 |------|-------------|-------|
 | `config.generate` | Enable automatic config.toml generation | `true` |
+| `config.keep` | Annotate the generated secret, to ensure helm does not remove it during uninstall | `true` |
 | `config.trustedProxies` | List of trusted proxy CIDR ranges | `[]` |
 | `externalSecret` | Name of existing secret containing Rauthy configuration | `""` |
 
-## Examples
+Either [externalSecret](#external-secret) or config can be used but not both.
 
-### Single Instance Deployment
+### Environent variable configuration
+| Name | Description | Value |
+|------|-------------|-------|
+| `env` | List of key value pairs. These will be applied as environment variables. | `{}` |
 
-```yaml
-replicaCount: 1
 
-config:
-  generate: true
-  proxyMode: true
-  trustedProxies:
-    - "10.199.20.0/24"
+### Persistence Parameters
 
-malloc:
-  preset: small
-
-ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: auth.example.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: rauthy-tls
-      hosts:
-        - auth.example.com
-
-persistence:
-  enabled: true
-  size: 256Mi
-```
-
-### High Availability Deployment
-
-```yaml
-replicaCount: 3
-
-config:
-  generate: true
-  proxyMode: true
-  trustedProxies:
-    - "10.199.20.0/24"
-
-malloc:
-  preset: big
-
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 200m
-
-ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: auth.example.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: rauthy-tls
-      hosts:
-        - auth.example.com
-
-persistence:
-  enabled: true
-  size: 256Mi
-```
+| Name | Description | Value |
+|------|-------------|-------|
+| `persistence.enabled` | Enable persistent volume claims | `false` |
+| `persistence.size` | Persistent Volume size | `256Mi` |
+| `persistence.accessMode` | Persistent Volume access mode | `ReadWriteOnce` |
+| `persistence.storageClassName` | Persistent Volume storage class | `` |
 
 ## Generating rauthy configuration
 The chart allows you to deploy rauthy by generating a configuration for you based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html).
@@ -211,7 +197,7 @@ To use this feature keep the externalSecret empty.
 
 The chart supports configuring rauthy via your own secret.
 
-You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the `externalSecret` field. For example:
+You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the [externalSecret](#external-secret) field. For example:
 ```yaml
 apiVersion: v1
 kind: Secret
