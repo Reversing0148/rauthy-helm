@@ -34,9 +34,9 @@ Validation for replica count
 {{/*
 Validation for malloc preset parameter
 */}}
-{{- define "rauthy.validateSize" -}}
-{{- $validSizes := list "small" "medium" "big" "open" "custom" -}}
-{{- if not (has .Values.malloc.preset $validSizes) -}}
-{{- fail (printf "Invalid malloc preset '%s'. Must be one of: %s" (default "undefined" .Values.malloc.preset) (join ", " $validSizes)) -}}
+{{- define "rauthy.validateMallocPreset" -}}
+{{- $validPresets := list "small" "medium" "big" "open" "custom" -}}
+{{- if not (has .Values.malloc.preset $validPresets) -}}
+{{- fail (printf "Invalid malloc preset '%s'. Must be one of: %s" (default "undefined" .Values.malloc.preset) (join ", " $validPresets)) -}}
 {{- end -}}
 {{- end -}}
