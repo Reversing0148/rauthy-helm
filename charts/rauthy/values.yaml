@@ -59,7 +59,7 @@ metrics:
   enabled: false
   port: 9090
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+# This block is for setting up the ingress more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
   className: ""
@@ -213,7 +213,7 @@ config:
 # Extra environment variables to pass to the container.
 # This is mostly for backwards compatibility. New installations should
 # prefer using the config.toml via the externalSecret option.
-env:
+env: {}
   # FOO: "BAR"
 
 # Persistence configuration for the volumeClaimTemplate.

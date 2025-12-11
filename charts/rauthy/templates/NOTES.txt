@@ -51,9 +51,11 @@ To learn more about the release, try:
   
   kubectl get secret --namespace {{ .Release.Namespace }} {{ include "rauthy.fullname" . }}-config -o json | jq '.items[] | {name: .metadata.name,data: .data|map_values(@base64d)}'
   
-  The secret will not be removed when the helm release is uninstalled.
   This configuration should be secure enough for experimenting with Rauthy.
   It is in your own interest to manage this secret without this helm chart.
+  {{- if .Values.config.keep }}
+  The secret will not be removed when the helm release is uninstalled.
+  {{- end }}
 
 {{- end }}
 {{- if (not .Values.persistence.enabled)}}

@@ -20,7 +20,7 @@
             }
         },
         "env": {
-            "type": "null"
+            "type": "object"
         },
         "externalSecret": {
             "type": "string"
