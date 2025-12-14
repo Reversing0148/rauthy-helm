@@ -14,5 +14,5 @@ spec:
       args:
         - '--no-check-certificate'
         - '-qO-'
-        - '{{ include "rauthy.pubUrl" . }}/health'
+        - '{{ include "rauthy.pubUrl" . }}/auth/v1/health'
   restartPolicy: Never
