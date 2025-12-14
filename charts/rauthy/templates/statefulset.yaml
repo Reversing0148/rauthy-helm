@@ -43,7 +43,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "rauthy.name" . }}
           securityContext:
             capabilities:
               drop:
