@@ -43,7 +43,7 @@ jobs:
 
       - name: Validate templates
         run: |
-          helm template rauthy charts/rauthy | kubeconform -verbose
+          helm template rauthy charts/rauthy | ./kubeconform -verbose
 
       - name: Copy README.md to chart directory
         run: |
