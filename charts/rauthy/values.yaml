@@ -46,15 +46,15 @@ service:
   # Indicate the scheme used by the Rauthy server. Eg.: "http" or "https"
   scheme: "http"
 
-# This is for setting up a headless service to enable pod-to-pod communication for clustered workloads
-# The headless service is only created when replicaCount is greater than 1
-headlessService:
+# This section is for configuring ports for hiqlite with a headless service.
+# This headless service is only created when replicaCount is greater than 1
+hiqlite:
   ports:
     raft: 8100
     api: 8200
 
-# This will enable the metrics in the generated config.toml
-# if config.generate is true and will expose the metrics port in the service.
+# This will enable the metrics in the generated config.toml and 
+# publish the port on the relevant kubernetes resources
 metrics:
   enabled: false
   port: 9090
@@ -155,7 +155,7 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /ready
-    port: api
+    port: hiqlite-api
   initialDelaySeconds: 5
   # Do NOT increase this period, because otherwise K8s may not catch
   # a shutting down pod fast enough and may keep routing requests to
@@ -187,6 +187,26 @@ affinity: {}
 
 topologySpreadConstraints: []
 
+# Persistence configuration for the volumeClaimTemplate.
+# Emptydir will be used if disabled
+persistence:
+  enabled: false
+  size: 128Mi
+  accessMode: ReadWriteOnce
+  storageClassName: ""
+
+# Configuration for enabling and customizing the ServiceMonitor resource.
+# This is used to integrate with Prometheus for monitoring purposes.
+serviceMonitor:
+  # Enable or disable the ServiceMonitor resource.
+  enabled: false
+  # Namespace override for the ServiceMonitor resource.
+  namespaceOverride: ""
+  # The port exposed by the service to scrape metrics from.
+  port: metrics
+  # The interval at which Prometheus will scrape metrics.
+  interval: 30s
+
 # This allows for mounting config.toml. It is in your own interest, to set
 # a secret that is not managed by helm so that you can retain your configuration
 # and keys across redeployments.
@@ -215,23 +235,3 @@ config:
 # prefer using the config.toml via the externalSecret option.
 env: {}
   # FOO: "BAR"
-
-# Persistence configuration for the volumeClaimTemplate.
-# Emptydir will be used if disabled
-persistence:
-  enabled: false
-  size: 128Mi
-  accessMode: ReadWriteOnce
-  storageClassName: ""
-
-# Configuration for enabling and customizing the ServiceMonitor resource.
-# This is used to integrate with Prometheus for monitoring purposes.
-serviceMonitor:
-  # Enable or disable the ServiceMonitor resource.
-  enabled: false
-  # Namespace override for the ServiceMonitor resource.
-  namespaceOverride: ""
-  # The port exposed by the service to scrape metrics from.
-  port: metrics
-  # The interval at which Prometheus will scrape metrics.
-  interval: 30s

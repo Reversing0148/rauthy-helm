@@ -12,7 +12,7 @@ metadata:
     {{- include "rauthy.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  serviceName: {{ include "rauthy.fullname" . }}-headless
+  serviceName: {{ include "rauthy.fullname" . }}-hiqlite-headless
   podManagementPolicy: OrderedReady
   updateStrategy:
     {{- toYaml .Values.updateStrategy | nindent 4 }}
@@ -60,11 +60,11 @@ spec:
             - name: {{ .Values.service.scheme }}
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-            - name: raft
-              containerPort: {{ .Values.headlessService.ports.raft }}
+            - name: hiqlite-raft
+              containerPort: {{ .Values.hiqlite.ports.raft }}
               protocol: TCP
-            - name: api
-              containerPort: {{ .Values.headlessService.ports.api }}
+            - name: hiqlite-api
+              containerPort: {{ .Values.hiqlite.ports.api }}
               protocol: TCP
             {{- if .Values.metrics.enabled }}
             - name: metrics
