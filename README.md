@@ -194,6 +194,22 @@ The chart allows you to deploy rauthy by generating a configuration for you base
 
 To use this feature keep the externalSecret empty.
 
+> ⚠️ Important! The configuration is re-genreated and applied on each upgrade! Make sure to migrate to `externalSecret` after your first install and before an upgrade to avoid data loss!
+
+Migration steps:
+- Install the helm chart with `config.generate` `true`
+- Modify your `values.yaml` as such: 
+  ```yaml
+  config:
+    generate: false
+  ```
+  ```yaml
+  externalSecret: "rauthy-config"
+  ```
+  Make sure to use your secret's name!
+
+- You can now safely upgrade
+
 ## Bring your own secret
 
 The chart supports configuring rauthy via your own secret.
