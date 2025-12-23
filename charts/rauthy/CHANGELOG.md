@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-beta-1] - 2025-12-28
 
+### Added
+- feat: add changelog
+- feat: add verify workflow
+- feat: add kubeconform to release and verify workflow
+
 ### Changed
 - chore: update appVersion, add helm keywords
 - feat: divert from rauthy version to ensure semver compliance with breaking chart changes
@@ -41,7 +46,3 @@ All notable changes to this project will be documented in this file.
         "3 rauthy-2.rauthy-hiqlite-headless:8100 rauthy-2.rauthy-hiqlite-headless:8200",
     ]
     ```
-- chore: update appVersion to 0.33.2
-
-### Added
-- feat: add changelog
