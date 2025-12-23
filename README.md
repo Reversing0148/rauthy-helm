@@ -2,6 +2,8 @@
 
 [Rauthy](https://github.com/sebadob/rauthy) is an OpenID Connect (OIDC) Provider and Single Sign-On (SSO) solution written in Rust. It provides a secure, fast, and reliable authentication service for your applications.
 
+This helm chart aims to make your deployment and maintenance of rauthy easier in a kubernetes environment.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
@@ -86,13 +88,13 @@ helm uninstall rauthy
 | `service.port` | Rauthy port exposed by the service | `8080` |
 | `service.scheme` | Rauthy http and api scheme | `http` |
 
-### Headless Service Parameters
-This enables pod to pod communication for clustered deployments.
+### Hiqlite Parameters
+This is for configuring a headless service for hiqlite.
 
 | Name | Description | Value |
 |------|-------------|-------|
-| `headlessService.ports.raft` | Raft port used by Rauthy | `8100` |
-| `headlessService.ports.api` | Api port used by Rauthy | `8200` |
+| `hiqlite.ports.raft` | Raft port used by Rauthy | `8100` |
+| `hiqlite.ports.api` | Api port used by Rauthy | `8200` |
 
 ### Metrics configuration
 This defines a port for metrics on the service and pod resources. 
@@ -158,7 +160,7 @@ Setting limits is possible but not recommended. For more details read the commen
 ### External secret
 | Name | Description | Value |
 |------|-------------|-------|
-| `externalSecret` | Name of the secret with your existing configuration. | `` |
+| `externalSecret` | Name of the secret with your existing configuration. | `""` |
 
 Either externalSecret or [config](#configuration-parameters) can be used but not both.
 
@@ -169,7 +171,6 @@ Either externalSecret or [config](#configuration-parameters) can be used but not
 | `config.generate` | Enable automatic config.toml generation | `true` |
 | `config.keep` | Annotate the generated secret, to ensure helm does not remove it during uninstall | `true` |
 | `config.trustedProxies` | List of trusted proxy CIDR ranges | `[]` |
-| `externalSecret` | Name of existing secret containing Rauthy configuration | `""` |
 
 Either [externalSecret](#external-secret) or config can be used but not both.
 
@@ -192,6 +193,22 @@ Either [externalSecret](#external-secret) or config can be used but not both.
 The chart allows you to deploy rauthy by generating a configuration for you based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html).
 
 To use this feature keep the externalSecret empty.
+
+> ⚠️ Important! The configuration is re-genreated and applied on each upgrade! Make sure to migrate to `externalSecret` after your first install and before an upgrade to avoid data loss!
+
+Migration steps:
+- Install the helm chart with `config.generate` `true`
+- Modify your `values.yaml` as such: 
+  ```yaml
+  config:
+    generate: false
+  ```
+  ```yaml
+  externalSecret: "rauthy-config"
+  ```
+  Make sure to use your secret's name!
+
+- You can now safely upgrade
 
 ## Bring your own secret
 
@@ -218,10 +235,18 @@ externalSecret: "rauthy-config"
 ```
 
 ## Persistence
+Rauthy is deployed as a statefulset, therefore the use of some form of persistent volume is inevitable.
 
-The chart mounts a persistent volume at `/app/data` for storing Rauthy's internal hiqlite database and configuration.
+### Storage
+The chart mounts a persistent volume at `/app/data` for storing Rauthy's internal [hiqlite](https://github.com/sebadob/hiqlite) database and configuration.
 
 By default, the chart uses an `emptyDir` volume when persistence is disabled.
+
+### Hiqlite
+Currently this helm chart only supports deploying rauthy with its internal [hiqlite](https://github.com/sebadob/hiqlite) database.
+
+### Postgresql
+External postgresql database support via the helm chart is planned but is not yet available.
 
 
 ## HTTPRoute considerations
