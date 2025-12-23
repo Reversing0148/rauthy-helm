@@ -41,3 +41,7 @@ All notable changes to this project will be documented in this file.
         "3 rauthy-2.rauthy-hiqlite-headless:8100 rauthy-2.rauthy-hiqlite-headless:8200",
     ]
     ```
+- chore: update appVersion to 0.33.2
+
+### Added
+- feat: add changelog
