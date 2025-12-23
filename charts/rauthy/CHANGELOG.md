@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - feat: add changelog
 - feat: add verify workflow
 - feat: add kubeconform to release and verify workflow
+- feat: add test workflow using helm/chart-testing-action
 
 ### Changed
 - chore: update appVersion to 0.33.2
