@@ -14,5 +14,5 @@ spec:
       args:
         - '--no-check-certificate'
         - '-qO-'
-        - '{{ include "rauthy.pubUrl" . }}/auth/v1/health'
+        - '{{ include "rauthy.externalScheme" . }}://{{ include "rauthy.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local/auth/v1/health'
   restartPolicy: Never
