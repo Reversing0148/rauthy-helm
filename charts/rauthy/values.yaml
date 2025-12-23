@@ -53,7 +53,7 @@ hiqlite:
     raft: 8100
     api: 8200
 
-# This will enable the metrics in the generated config.toml and 
+# This will enable the metrics in the generated config.toml and
 # publish the port on the relevant kubernetes resources
 metrics:
   enabled: false
