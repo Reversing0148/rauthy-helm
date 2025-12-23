@@ -1,31 +1,35 @@
 # Changelog
 
-## [0.33.2]
+All notable changes to this project will be documented in this file.
 
-### BREAKING CHANGES
+## [0.33.2] - 2025-12-23
+
+### Changed
 - chore!: use more obvious port/service names, set the stage for future postgresql support
 
-This change affects how the hiqlite headless service is referenced in high availability deployment configurations. 
+    This **breaking** change affects how the hiqlite headless service is referenced in high availability deployment configurations.
 
-To avoid downtime, change the `nodes` section of your secret from `-headless` suffix to `-hiqlite-headless` suffix before the!
+    If you run rauthy with 1 replica, or use an external postgresql database you are not affected.
 
-For example change:
-```toml
-nodes = [
-    "1 rauthy-0.rauthy-headless:8100 rauthy-0.rauthy-headless:8200",
-    "2 rauthy-1.rauthy-headless:8100 rauthy-1.rauthy-headless:8200",
-    "3 rauthy-2.rauthy-headless:8100 rauthy-2.rauthy-headless:8200",
-]
-```
-to:
-```toml
-nodes = [
-    "1 rauthy-0.rauthy-hiqlite-headless:8100 rauthy-0.rauthy-hiqlite-headless:8200",
-    "2 rauthy-1.rauthy-hiqlite-headless:8100 rauthy-1.rauthy-hiqlite-headless:8200",
-    "3 rauthy-2.rauthy-hiqlite-headless:8100 rauthy-2.rauthy-hiqlite-headless:8200",
-]
-```
+    To avoid downtime, change the `nodes` section of your secret from `-headless` suffix to `-hiqlite-headless` suffix before the!
 
-### Changes
+    For example change:
+    ```toml
+    nodes = [
+        "1 rauthy-0.rauthy-headless:8100 rauthy-0.rauthy-headless:8200",
+        "2 rauthy-1.rauthy-headless:8100 rauthy-1.rauthy-headless:8200",
+        "3 rauthy-2.rauthy-headless:8100 rauthy-2.rauthy-headless:8200",
+    ]
+    ```
+    to:
+    ```toml
+    nodes = [
+        "1 rauthy-0.rauthy-hiqlite-headless:8100 rauthy-0.rauthy-hiqlite-headless:8200",
+        "2 rauthy-1.rauthy-hiqlite-headless:8100 rauthy-1.rauthy-hiqlite-headless:8200",
+        "3 rauthy-2.rauthy-hiqlite-headless:8100 rauthy-2.rauthy-hiqlite-headless:8200",
+    ]
+    ```
 - chore: update appVersion to 0.33.2
+
+### Added
 - feat: add changelog
