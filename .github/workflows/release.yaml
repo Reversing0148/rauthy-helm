@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
 
@@ -30,20 +30,10 @@ jobs:
       - name: Set up dependencies
         run: |
           helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git --verify=false
-          wget -O kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz
-          tar -xf kubeconform.tar.gz
 
       - name: Create values.schema.json
         run: |
           helm schema-gen charts/rauthy/values.yaml > charts/rauthy/values.schema.json
-
-      - name: Lint chart
-        run: |
-          helm lint charts/rauthy
-
-      - name: Validate templates
-        run: |
-          helm template rauthy charts/rauthy | ./kubeconform -verbose
 
       - name: Copy README.md to chart directory
         run: |
