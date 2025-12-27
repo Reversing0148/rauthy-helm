@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta-1] - 2025-12-28
+
+### Changed
+- chore: update appVersion, add helm keywords
+- feat: divert from rauthy version to ensure semver compliance with breaking chart changes
+
 ## [0.33.2] - 2025-12-23
 
 ### Added
