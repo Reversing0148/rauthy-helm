@@ -2,22 +2,36 @@ apiVersion: v2
 name: rauthy
 description: A Helm chart for Rauthy
 type: application
-version: 0.33.2
-appVersion: "0.33.2"
+version: 1.0.0-beta-1
+appVersion: "0.33.3"
 home: https://github.com/sebadob/rauthy
 icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
 sources:
   - https://github.com/sebadob/rauthy
   - https://github.com/Reversing0148/rauthy-helm
 keywords:
+  - jwt
   - authentication
   - authorization
   - oidc
+  - identity
+  - identity-provider
+  - idp
+  - server
+  - pam
+  - sso
   - openid-connect
   - sso
+  - oidc
+  - mfa
+  - scim
   - single-sign-on
   - identity
   - rust
+  - oidc-provider
+  - webauthn
+  - fido2
+  - passkey
 maintainers:
   - name: Reversing0148
     url: https://github.com/Reversing0148
