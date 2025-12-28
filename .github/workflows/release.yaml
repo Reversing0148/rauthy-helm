@@ -33,12 +33,11 @@ jobs:
 
       - name: Create values.schema.json
         run: |
-          helm schema-gen charts/rauthy/values.yaml > charts/rauthy/values.schema.json
+          helm schema-gen charts/rauthy-helm/values.yaml > charts/rauthy-helm/values.schema.json
 
       - name: Copy README.md to chart directory
         run: |
-          cp README.md charts/rauthy/README.md
-
+          cp README.md charts/rauthy-helm/README.md
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         env:
