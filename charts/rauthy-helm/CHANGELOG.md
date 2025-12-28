@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta-3] - 2025-12-28
+
+### Changed
+- fix: update chart name in release workflow
+
 ## [1.0.0-beta-2] - 2025-12-28
 
 ### Changed
