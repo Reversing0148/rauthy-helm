@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2025-12-28
+
+### Changed
+- docs: update and move readme to chart directory, link to readme from root directory
+- fix: remove readme copy from release action 
+
 ## [1.0.0-beta-5] - 2025-12-28
 
 ### Changed
