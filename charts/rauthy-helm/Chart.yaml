@@ -7,8 +7,8 @@ appVersion: "0.33.3"
 home: https://github.com/Reversing0148/rauthy-helm
 icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
 sources:
-  - https://github.com/sebadob/rauthy
   - https://github.com/Reversing0148/rauthy-helm
+  - https://github.com/sebadob/rauthy
 keywords:
   - jwt
   - authentication
