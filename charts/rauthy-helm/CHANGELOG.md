@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta-2] - 2025-12-28
+
+### Changed
+- feat: update chart name from rauthy to rauthy-helm
+
+### Added
+- feat: Release in OCI format to github packages
+
 ## [1.0.0-beta-1] - 2025-12-28
+
+### Added
+- feat: add changelog
+- feat: add test workflow using helm/chart-testing-action
+- fix: fix test connection
 
 ### Changed
 - chore: update appVersion, add helm keywords

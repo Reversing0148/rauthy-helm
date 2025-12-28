@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-env
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "rauthy.labels" . | nindent 4 }}
+    {{- include "rauthy-helm.labels" . | nindent 4 }}
 data:
   {{- range $key, $value := .Values.env }}
   {{ $key }}: {{ $value | quote }}
