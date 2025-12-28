@@ -2,7 +2,7 @@ apiVersion: v2
 name: rauthy-helm
 description: A Helm chart for Rauthy
 type: application
-version: 1.0.0-beta-1
+version: 1.0.0-beta-2
 appVersion: "0.33.3"
 home: https://github.com/sebadob/rauthy
 icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
