@@ -1,7 +1,7 @@
 {{/*
 Validation for Rauthy server scheme
 */}}
-{{- define "rauthy.validateScheme" -}}
+{{- define "rauthy-helm.validateScheme" -}}
 {{- $validSchemes := list "http" "https" -}}
 {{- if not (has .Values.service.scheme $validSchemes) -}}
 {{- fail (printf "Invalid service scheme '%s'. Must be one of: %s" (default "undefined" .Values.service.scheme) (join ", " $validSchemes)) -}}
@@ -11,7 +11,7 @@ Validation for Rauthy server scheme
 {{/*
 Validation for external secret and config generation
 */}}
-{{- define "rauthy.validateConfigurationMethod" -}}
+{{- define "rauthy-helm.validateConfigurationMethod" -}}
 {{- if and .Values.config.generate .Values.externalSecret -}}
 {{- fail "Cannot use both config.generate and externalSecret at the same time" -}}
 {{- end -}}
@@ -23,7 +23,7 @@ Validation for external secret and config generation
 {{/*
 Validation for replica count
 */}}
-{{- define "rauthy.validateReplicaCount" -}}
+{{- define "rauthy-helm.validateReplicaCount" -}}
 {{- if gt (int .Values.replicaCount) 1 -}}
   {{- if eq (int (mod (int .Values.replicaCount) 2)) 0 -}}
     {{- fail "replicaCount must be an odd number when greater than 1 for proper Raft consensus" -}}
@@ -34,7 +34,7 @@ Validation for replica count
 {{/*
 Validation for malloc preset parameter
 */}}
-{{- define "rauthy.validateMallocPreset" -}}
+{{- define "rauthy-helm.validateMallocPreset" -}}
 {{- $validPresets := list "small" "medium" "big" "open" "custom" -}}
 {{- if not (has .Values.malloc.preset $validPresets) -}}
 {{- fail (printf "Invalid malloc preset '%s'. Must be one of: %s" (default "undefined" .Values.malloc.preset) (join ", " $validPresets)) -}}

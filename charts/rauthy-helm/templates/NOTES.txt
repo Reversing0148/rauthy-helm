@@ -1,4 +1,4 @@
-Thank you for installing {{ include "rauthy.name" . }}.
+Thank you for installing {{ include "rauthy-helm.name" . }}.
 Your release is named {{ .Release.Name }}.
 To learn more about the release, try:
 
@@ -26,16 +26,16 @@ To learn more about the release, try:
   {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "rauthy.fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "rauthy-helm.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch its status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "rauthy.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "rauthy.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+           You can watch its status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "rauthy-helm.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "rauthy-helm.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "rauthy.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "rauthy-helm.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
@@ -43,15 +43,15 @@ To learn more about the release, try:
 {{- if eq .Release.Revision 1 }}
 - To get the password for the admin user run:
 
-  kubectl --namespace {{ .Release.Namespace }} logs {{ include "rauthy.fullname" . }}-0 -f
+  kubectl --namespace {{ .Release.Namespace }} logs {{ include "rauthy-helm.fullname" . }}-0 -f
 
 {{- end }}
 {{- if (not .Values.externalSecret )}}
 - External secret was not specified. A secret will be generated. Inspect it with the following command:
   
-  kubectl get secret --namespace {{ .Release.Namespace }} {{ include "rauthy.fullname" . }}-config -o json | jq '.items[] | {name: .metadata.name,data: .data|map_values(@base64d)}'
+  kubectl get secret --namespace {{ .Release.Namespace }} {{ include "rauthy-helm.fullname" . }}-config -o json | jq '.items[] | {name: .metadata.name,data: .data|map_values(@base64d)}'
   
-  This configuration should be secure enough for experimenting with Rauthy.
+  This configuration should be secure enough for experimenting with rauthy-helm.
   It is in your own interest to manage this secret without this helm chart.
   {{- if .Values.config.keep }}
   The secret will not be removed when the helm release is uninstalled.

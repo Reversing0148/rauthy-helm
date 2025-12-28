@@ -2,12 +2,12 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "rauthy.fullname" . }}
+  name: {{ include "rauthy-helm.fullname" . }}
   labels:
-    {{- include "rauthy.labels" . | nindent 4 }}
+    {{- include "rauthy-helm.labels" . | nindent 4 }}
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      {{- include "rauthy.selectorLabels" . | nindent 6 }}
+      {{- include "rauthy-helm.selectorLabels" . | nindent 6 }}
 {{- end }}

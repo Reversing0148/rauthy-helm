@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "rauthy.fullname" . }}-test-connection"
+  name: "{{ include "rauthy-helm.fullname" . }}-test-connection"
   labels:
-    {{- include "rauthy.labels" . | nindent 4 }}
+    {{- include "rauthy-helm.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -14,7 +14,7 @@ spec:
         - sh
         - -c
         - |
-          url="{{ include "rauthy.externalScheme" . }}://{{ include "rauthy.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ include "rauthy.externalPort" . }}/auth/v1/health"
+          url="{{ include "rauthy-helm.externalScheme" . }}://{{ include "rauthy-helm.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ include "rauthy-helm.externalPort" . }}/auth/v1/health"
           max_retries=5
           delay=2
           for i in $(seq 1 $max_retries); do

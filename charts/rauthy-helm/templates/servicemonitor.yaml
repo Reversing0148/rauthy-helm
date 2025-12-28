@@ -2,14 +2,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "rauthy.fullname" . }}-servicemonitor
+  name: {{ include "rauthy-helm.fullname" . }}-servicemonitor
   namespace: {{ .Values.serviceMonitor.namespaceOverride | default .Release.Namespace }}
   labels:
-    {{- include "rauthy.labels" . | nindent 4 }}
+    {{- include "rauthy-helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "rauthy.selectorLabels" . | nindent 6 }}
+      {{- include "rauthy-helm.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

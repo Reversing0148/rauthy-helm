@@ -1,25 +1,25 @@
-{{- include "rauthy.validateReplicaCount" . }}
-{{- include "rauthy.validateConfigurationMethod" . }}
-{{- include "rauthy.validateMallocPreset" . }}
-{{- include "rauthy.validateScheme" . -}}
+{{- include "rauthy-helm.validateReplicaCount" . }}
+{{- include "rauthy-helm.validateConfigurationMethod" . }}
+{{- include "rauthy-helm.validateMallocPreset" . }}
+{{- include "rauthy-helm.validateScheme" . -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "rauthy.fullname" . }}
+  name: {{ include "rauthy-helm.fullname" . }}
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
   labels:
-    {{- include "rauthy.labels" . | nindent 4 }}
+    {{- include "rauthy-helm.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  serviceName: {{ include "rauthy.fullname" . }}-hiqlite-headless
+  serviceName: {{ include "rauthy-helm.fullname" . }}-hiqlite-headless
   podManagementPolicy: OrderedReady
   updateStrategy:
     {{- toYaml .Values.updateStrategy | nindent 4 }}
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      {{- include "rauthy.selectorLabels" . | nindent 6 }}
+      {{- include "rauthy-helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -27,7 +27,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "rauthy.labels" . | nindent 8 }}
+        {{- include "rauthy-helm.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -43,7 +43,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: {{ include "rauthy.name" . }}
+        - name: {{ include "rauthy-helm.name" . }}
           securityContext:
             capabilities:
               drop:
@@ -85,14 +85,14 @@ spec:
           {{- end }}
           env:
               - name: "MALLOC_CONF"
-                value: {{ include "rauthy.mallocConf" . | quote }}
+                value: {{ include "rauthy-helm.mallocConf" . | quote }}
           {{- if .Values.env }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-env
           {{- end }}
           volumeMounts:
-            - name: {{ include "rauthy.fullname" . }}-data
+            - name: {{ include "rauthy-helm.fullname" . }}-data
               mountPath: /app/data
               readOnly: false
             - name: rauthy-config
@@ -105,9 +105,9 @@ spec:
       volumes:
         - name: rauthy-config
           secret:
-            secretName: {{ include "rauthy.fullname" . }}-config
+            secretName: {{ include "rauthy-helm.fullname" . }}-config
         {{- if not .Values.persistence.enabled }}
-        - name: {{ include "rauthy.fullname" . }}-data
+        - name: {{ include "rauthy-helm.fullname" . }}-data
           emptyDir: {}
         {{- end }}
         {{- with .Values.volumes }}
@@ -127,7 +127,7 @@ spec:
                 - key: app.kubernetes.io/name
                   operator: In
                   values:
-                  - {{ include "rauthy.name" . }}
+                  - {{ include "rauthy-helm.name" . }}
               topologyKey: kubernetes.io/hostname
       {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
@@ -143,7 +143,7 @@ spec:
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ include "rauthy.fullname" . }}-data
+        name: {{ include "rauthy-helm.fullname" . }}-data
       spec:
         accessModes:
           - {{ .Values.persistence.accessMode | quote }}
