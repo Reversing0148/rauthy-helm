@@ -300,6 +300,51 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.33.3
+    created: "2025-12-28T20:17:59.927707672Z"
+    description: A Helm chart for Rauthy
+    digest: 0de9858af663fc0eb715c0f429c9b26b10d0fa4410e9cced39634dbb4d5d2bd2
+    home: https://github.com/Reversing0148/rauthy-helm
+    icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
+    keywords:
+    - jwt
+    - authentication
+    - authorization
+    - oidc
+    - identity
+    - identity-provider
+    - idp
+    - server
+    - pam
+    - sso
+    - openid-connect
+    - sso
+    - oidc
+    - mfa
+    - scim
+    - single-sign-on
+    - identity
+    - rust
+    - oidc-provider
+    - webauthn
+    - fido2
+    - passkey
+    kubeVersion: '>=1.19.0-0'
+    maintainers:
+    - name: Reversing0148
+      url: https://github.com/Reversing0148
+    name: rauthy-helm
+    sources:
+    - https://github.com/Reversing0148/rauthy-helm
+    - https://github.com/sebadob/rauthy
+    type: application
+    urls:
+    - https://github.com/Reversing0148/rauthy-helm/releases/download/rauthy-helm-1.0.0/rauthy-helm-1.0.0.tgz
+    version: 1.0.0
+  - annotations:
+      category: Authentication
+      licenses: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.33.3
     created: "2025-12-28T01:28:32.061763802Z"
     description: A Helm chart for Rauthy
     digest: df034f146c8b4d328967644e90738d152271cb977719195687a1a02bfcdaf648
@@ -475,4 +520,4 @@ entries:
     urls:
     - https://github.com/Reversing0148/rauthy-helm/releases/download/rauthy-helm-1.0.0-beta-2/rauthy-helm-1.0.0-beta-2.tgz
     version: 1.0.0-beta-2
-generated: "2025-12-28T01:28:32.061803877Z"
+generated: "2025-12-28T20:17:59.927755392Z"
