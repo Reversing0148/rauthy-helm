@@ -21,14 +21,14 @@ This helm chart aims to make your deployment and maintenance of rauthy easier in
 ## Installation
 
 ```bash
-helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.0 -n rauthy --create-namespace
+helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.1 -n rauthy --create-namespace
 ```
 
 ## Upgrading
 
 Please check the [Generating rauthy configuration](#generating-rauthy-configuration) section before upgrading to avoid data loss!
 ```bash
-helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.0 -n rauthy
+helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.1 -n rauthy
 ```
 
 ## Uninstallation
