@@ -3,7 +3,7 @@ name: rauthy-helm
 description: A Helm chart for Rauthy
 type: application
 version: 1.0.1
-appVersion: "0.33.3"
+appVersion: "0.33.4"
 home: https://github.com/Reversing0148/rauthy-helm
 icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
 sources:
