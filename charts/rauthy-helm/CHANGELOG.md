@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - chore: bump appVersion
+- fix: keep readme up-to-date 
 
 ## [1.0.0] - 2025-12-28
 

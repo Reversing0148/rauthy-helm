@@ -1,17 +1,14 @@
 # Rauthy Helm Chart
-
 [Rauthy](https://github.com/sebadob/rauthy) is an OpenID Connect (OIDC) Provider and Single Sign-On (SSO) solution written in Rust. It provides a secure, fast, and reliable authentication service for your applications.
 
 This helm chart aims to make your deployment and maintenance of rauthy easier in a kubernetes environment.
 
 ## Prerequisites
-
 - Kubernetes 1.19+
 - Helm 3.2.0+
 - Persistent volume provisioner support in the underlying infrastructure
 
 ## Features
-
 - Automated starter secret generation based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html) for getting familiar with rauthy,
 - Bring Your Own configuration via external secret,
 - Highly available, clustered setup by default,
@@ -19,20 +16,17 @@ This helm chart aims to make your deployment and maintenance of rauthy easier in
 - Metrics and serviceMonitor support.
 
 ## Installation
-
 ```bash
 helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.1 -n rauthy --create-namespace
 ```
 
 ## Upgrading
-
 Please check the [Generating rauthy configuration](#generating-rauthy-configuration) section before upgrading to avoid data loss!
 ```bash
 helm upgrade --install rauthy oci://ghcr.io/reversing0148/rauthy-helm --version 1.0.1 -n rauthy
 ```
 
 ## Uninstallation
-
 ```bash
 helm uninstall rauthy
 ```
@@ -40,7 +34,6 @@ helm uninstall rauthy
 ## Parameters
 
 ### Global Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `nameOverride` | Override the chart name | `rauthy` |
@@ -48,7 +41,6 @@ helm uninstall rauthy
 | `replicaCount` | Number of Rauthy replicas | `3` |
 
 ### Image Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `image.repository` | Rauthy image repository | `ghcr.io/sebadob/rauthy` |
@@ -57,7 +49,6 @@ helm uninstall rauthy
 | `imagePullSecrets` | Docker registry secret names | `[]` |
 
 ### Statefulset Update Strategy
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `updateStrategy.type` | Update strategy of the statefulset | `RollingUpdate` |
@@ -71,7 +62,6 @@ helm uninstall rauthy
 
 
 ### Service Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `service.annotations` | Annotations for the service| `{}` |
@@ -96,7 +86,6 @@ This defines a port for metrics on the service and pod resources.
 | `metrics.port` | Metrics port to be published via the service | `9090` |
 
 ### Ingress Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `ingress.enabled` | Enable ingress record generation | `false` |
@@ -106,7 +95,6 @@ This defines a port for metrics on the service and pod resources.
 | `ingress.tls` | TLS configuration for ingress | `[]` |
 
 ### Resource Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `resources.requests.cpu` | CPU request of the container | `medium` |
@@ -115,29 +103,34 @@ This defines a port for metrics on the service and pod resources.
 Setting limits is possible but not recommended. For more details read the comments in  `values.yaml`.
 
 ### Memory Allocator Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `malloc.preset` | Jemalloc preset (small/medium/big/open/custom) | `medium` |
 | `malloc.custom` | Custom malloc configuration when preset is "custom" | `""` |
 
 ### Probe configuration
+#### Liveness probe
 | Name | Description | Value |
 |------|-------------|-------|
 | `livenessProbe.httpGet.path` | Path for the liveness probe request | `/auth/v1/health` |
 | `livenessProbe.httpGet.port` | Port for the liveness probe request | `http` |
-| `livenessProbe.initialDelaySeconds` | Seconds to wait before the first liveness probe request is sent | `1` |
+| `livenessProbe.initialDelaySeconds` | Seconds to wait before the first liveness probe request is sent | `60` |
 | `livenessProbe.periodSeconds` | How often should kubelet check liveness | `30` |
-| `readinessProbe.httpGet.path` | Path for the readiness probe request | `/ping` |
-| `readinessProbe.httpGet.port` | Port for the readiness probe request | `api` |
-| `readinessProbe.initialDelaySeconds` | Seconds to wait before the first readiness probe request is sent | `5` |
-| `readinessProbe.periodSeconds` | How often should kubelet check readiness | `1` |
+| `livenessProbe.failureThreshold` | How many failed attempts before terminating the pod | `2` |
 
+#### Readiness probe
+| Name | Description | Value |
+|------|-------------|-------|
+| `readinessProbe.httpGet.path` | Path for the readiness probe request | `/ready` |
+| `readinessProbe.httpGet.port` | Port for the readiness probe request | `hiqlite-api` |
+| `readinessProbe.initialDelaySeconds` | Seconds to wait before the first readiness probe request is sent | `5` |
+| `readinessProbe.periodSeconds` | How often should kubelet check readiness | `3` |
+| `readinessProbe.failureThreshold` | How many failed attempts before terminating the pod | `2` |
 
 ### Volume configuration
 | Name | Description | Value |
 |------|-------------|-------|
-| `volumes` | Additional volumes on the output StatefulSet definition | `{}` |
+| `volumes` | Additional volumes on the output StatefulSet definition | `[]` |
 | `volumeMounts` | Additional volumeMounts on the output StatefulSet definition | `[]` |
 
 ### Scheduler fine tuning
@@ -148,6 +141,22 @@ Setting limits is possible but not recommended. For more details read the commen
 | `affinity` | Affinity rules for the statefulset definition | `{}` |
 | `topologySpreadConstraints` | Topology spread constraints for the statefulset definition | `[]` |
 
+### Persistence Parameters
+| Name | Description | Value |
+|------|-------------|-------|
+| `persistence.enabled` | Enable persistent volume claims | `false` |
+| `persistence.size` | Persistent Volume size | `256Mi` |
+| `persistence.accessMode` | Persistent Volume access mode | `ReadWriteOnce` |
+| `persistence.storageClassName` | Persistent Volume storage class | `` |
+
+### Service monitor configuration
+| Name | Description | Value |
+|------|-------------|-------|
+| `serviceMonitor.enabled` | Enable or disable the ServiceMonitor resource | `false` |
+| `serviceMonitor.namespaceOverride` | Namespace override for the ServiceMonitor resource | `""` |
+| `serviceMonitor.port` | The port exposed by the service to scrape metrics from | `metrics` |
+| `serviceMonitor.interval` | The interval at which Prometheus will scrape metrics | `30s` |
+
 ### External secret
 | Name | Description | Value |
 |------|-------------|-------|
@@ -156,7 +165,6 @@ Setting limits is possible but not recommended. For more details read the commen
 Either externalSecret or [config](#configuration-parameters) can be used but not both.
 
 ### Configuration Parameters
-
 | Name | Description | Value |
 |------|-------------|-------|
 | `config.generate` | Enable automatic config.toml generation | `true` |
@@ -169,16 +177,6 @@ Either [externalSecret](#external-secret) or config can be used but not both.
 | Name | Description | Value |
 |------|-------------|-------|
 | `env` | List of key value pairs. These will be applied as environment variables. | `{}` |
-
-
-### Persistence Parameters
-
-| Name | Description | Value |
-|------|-------------|-------|
-| `persistence.enabled` | Enable persistent volume claims | `false` |
-| `persistence.size` | Persistent Volume size | `256Mi` |
-| `persistence.accessMode` | Persistent Volume access mode | `ReadWriteOnce` |
-| `persistence.storageClassName` | Persistent Volume storage class | `` |
 
 ## Generating rauthy configuration
 The chart allows you to deploy rauthy by generating a configuration for you based on the [minimal production configuration](https://sebadob.github.io/rauthy/config/config_minimal.html).
@@ -202,7 +200,6 @@ Migration steps:
 - You can now safely upgrade
 
 ## Bring your own secret
-
 The chart supports configuring rauthy via your own secret.
 
 You can do this by creating a secret in the same namespace as rauthy, then providing the secret name, in the [externalSecret](#external-secret) field. For example:
@@ -239,11 +236,8 @@ Currently this helm chart only supports deploying rauthy with its internal [hiql
 ### Postgresql
 External postgresql database support via the helm chart is planned but is not yet available.
 
-
 ## HTTPRoute considerations
-
 - When `existingSecret` is not set, and `HTTPRoute` is enabled the templates assume you have tls configured on the gateway when generating the secret template.
 
 ## License
-
 Like rauthy this helm chart is licensed under the Apache License 2.0.
