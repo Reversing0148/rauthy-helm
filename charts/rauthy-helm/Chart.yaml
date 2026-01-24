@@ -2,8 +2,8 @@ apiVersion: v2
 name: rauthy-helm
 description: A Helm chart for Rauthy
 type: application
-version: 1.0.2
-appVersion: "0.34.0"
+version: 1.0.3
+appVersion: "0.34.1"
 home: https://github.com/Reversing0148/rauthy-helm
 icon: https://sebadob.github.io/rauthy/rauthy_grey_small.png
 sources:
