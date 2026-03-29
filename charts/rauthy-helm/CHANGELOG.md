@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2026-05-12
+
+### Changed
+- chore(deps): bump appVersion
+
+## [1.0.6] - 2026-03-29
+
+### Important, please read
+The appVersion of this helm chart version introduces a breaking change to [Rauthy](https://github.com/sebadob/rauthy).
+Read more: https://github.com/sebadob/rauthy/releases/tag/v0.35.0
+
+### Changed
+- chore(ci): update actions
+- chore(deps): bump appVersion
+
 ## [1.0.5] - 2026-01-26
 
 ### Changed
